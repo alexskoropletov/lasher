@@ -161,27 +161,27 @@ game.PlayerEntity = me.Entity.extend({
      * colision handler
      */
     collideHandler : function (response) {
-        switch (response.b.body.collisionType) {
-                case me.collision.types.ENEMY_OBJECT : {
-                    if (!response.b.isMovingEnemy) {
-                        // spike or any other fixed danger
-                        this.body.vel.y -= this.body.maxVel.y * me.timer.tick;
-                        this.hurt();
-                    } else {
-                        // a regular moving enemy entity
-                        if ((response.overlapV.y>0) && this.body.falling) {
-                            // jump
-                            this.body.vel.y -= this.body.maxVel.y * me.timer.tick;
-                        } else {
-                             this.pos.sub(response.overlapV);
-                             this.hurt();
-                             this.updateBounds();
-                        }
-                    }
-                    break;
-                }
-                default : break;
-            }
+//        switch (response.b.body.collisionType) {
+//                case me.collision.types.ENEMY_OBJECT : {
+//                    if (!response.b.isMovingEnemy) {
+//                        // spike or any other fixed danger
+//                        this.body.vel.y -= this.body.maxVel.y * me.timer.tick;
+//                        this.hurt();
+//                    } else {
+//                        // a regular moving enemy entity
+//                        if ((response.overlapV.y>0) && this.body.falling) {
+//                            // jump
+//                            this.body.vel.y -= this.body.maxVel.y * me.timer.tick;
+//                        } else {
+//                             this.pos.sub(response.overlapV);
+//                             this.hurt();
+//                             this.updateBounds();
+//                        }
+//                    }
+//                    break;
+//                }
+//                default : break;
+//            }
     },
 
     

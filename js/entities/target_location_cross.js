@@ -8,7 +8,6 @@ game.TargetLocationCross = me.Entity.extend({
         settings.image = "target_location_cross";
         this._super(me.Entity, 'init', [x, y , settings]);
         this.body.setCollisionMask(me.collision.types.NO_OBJECT);
-        this.collidable = false;
         this.renderable.addAnimation( "idle", [0, 1, 2, 3, 4, 5], 45 );
         this.renderable.setCurrentAnimation("idle", (function () {
             me.game.world.removeChild(this);

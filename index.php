@@ -61,7 +61,6 @@
     }
 
     $('body').on('contextmenu', '#screen', function(e){
-      game.data.rightClick = true;
       return false;
     });
   });

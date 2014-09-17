@@ -11,7 +11,10 @@ var game = {
      */
     data : {
         // score
-        rightClick: false,
+        canFire: true,
+        fireRate: 100,
+        fireInterval: null,
+        rightKey: false,
         playerDirection: "right",
         targetEntityShowed: false,
         score : 0,
@@ -86,21 +89,21 @@ var game = {
     },
 
     fireBullet: function() {
-//        var SimpleShotFire = new game.SimpleShot(
-//            game.player.pos.x + 20,
-//            game.player.pos.y + 20,
-//            {
-//                height: 32,
-//                width: 32
-//            }
-//        );
-//        me.game.world.addChild( SimpleShotFire, 6 );
-//        me.pool.register("simple_shot", game.SimpleShot);
-//        var simple_shot = me.pool.pull(
-//            "simple_shot",
-//
-//        );
-
+//        if( game.data.canFire ) {
+//            game.data.canFire = false;
+            var simple_shot = new game.SimpleShot(
+                game.player.pos.x,
+                game.player.pos.y,
+                {
+                    width: 32,
+                    height: 32
+                }
+            );
+            me.game.world.addChild( simple_shot, 6 );
+//            setTimeout( function() {
+//                game.data.canFire = true;
+//            }, 500 );
+//        }
     },
 
     mouseDown: function( e ) {
@@ -109,13 +112,28 @@ var game = {
         game.data.playerTargetX = e.gameWorldX;
         game.data.playerTargetY = e.gameWorldY;
         game.showTargetLocationCross(e.gameWorldX, e.gameWorldY);
+        if(e.button == me.input.mouse.RIGHT ) {
+//            game.data.rightKey = true;
+            game.fireBullet();
+            game.data.fireInterval = me.timer.setInterval(
+                function() {
+                    game.fireBullet();
+                },
+                game.data.fireRate
+            );
+        }
     },
     mouseUp: function( e ) {
-        if( game.data.rightClick ) {
-            game.fireBullet();
-        }
+//        if(e.button == me.input.mouse.RIGHT ) {
+//            console.log( game.player.pos.x );
+//            console.log( game.player.pos.y );
+//            console.log( e.gameWorldX );
+//            console.log( e.gameWorldY );
+////            game.fireBullet();
+//        }
+        me.timer.clearInterval( game.data.fireInterval );
+        game.data.rightKey = false;
         game.data.cursorDown = false;
-        game.data.rightClick = false;
     },
     mouseMove: function( e ) {
         if( game.data.cursorDown ) {
@@ -142,6 +160,7 @@ var game = {
         me.pool.register("mainPlayer", game.PlayerEntity);
         me.pool.register("possibleEnemy", game.Enemy1);
         me.pool.register("tager_location", game.TargetLocationCross);
+        me.pool.register("simple_shot", game.SimpleShot);
 
         // load the texture atlas file
         // this will be used by object entities later

@@ -6,30 +6,22 @@ game.SimpleShot = me.Entity.extend({
         settings.image = "bullet_image";
             // call the constructor
         this._super(me.Entity, 'init', [x, y , settings]);
-
+        this.direction = game.data.playerDirection;
         // player can exit the viewport (jumping, falling into a hole, etc.)
         this.alwaysUpdate = true;
 
-        this.body.setCollisionMask(me.collision.types.NO_OBJECT);
+//        this.body.setCollisionMask(me.collision.types.NO_OBJECT);
 
         // walking & jumping speed
-        this.body.setVelocity(8, 8);
+        this.body.setVelocity(16, 16);
 
         this.body.addShape(
-            new me.PolyShape(
-                x,
-                y,
-                [
-                    new me.Vector2d(0,0),
-                    new me.Vector2d(32,0),
-                    new me.Vector2d(32,32),
-                    new me.Vector2d(0,32)
-                ],
-                true )
+            new me.Ellipse( 16, 16, 8, 8 )
         );
         this.body.setShape(0);
 
         this.renderable.addAnimation( "idle",            [0], 0 );
+//        this.renderable.addAnimation( "explode",         [1, 2, 3], 45 );
         this.renderable.setCurrentAnimation("idle");
 
         // set the renderable position to bottom center
@@ -40,10 +32,119 @@ game.SimpleShot = me.Entity.extend({
      update the player pos
      ------            */
     update : function (dt) {
-        this.body.vel.x += this.body.accel.x * me.timer.tick;
-        this.body.vel.y += this.body.accel.y * me.timer.tick;
+        var bRemove = false;
+        if( this.direction == 'right' ) {
+            this.body.vel.x += this.body.accel.x * me.timer.tick;
+        } else if( this.direction == 'left' ) {
+            this.body.vel.x -= this.body.accel.x * me.timer.tick;
+        } else if( this.direction == 'up' ) {
+            this.body.vel.y -= this.body.accel.y * me.timer.tick;
+        } else if( this.direction == 'down' ) {
+            this.body.vel.y += this.body.accel.y * me.timer.tick;
+        } else if( this.direction == 'right_down' ) {
+            this.body.vel.x += this.body.accel.x * me.timer.tick;
+            this.body.vel.y += this.body.accel.y * me.timer.tick;
+        } else if( this.direction == 'right_up' ) {
+            this.body.vel.x += this.body.accel.x * me.timer.tick;
+            this.body.vel.y -= this.body.accel.y * me.timer.tick;
+        } else if( this.direction == 'left_down' ) {
+            this.body.vel.x -= this.body.accel.x * me.timer.tick;
+            this.body.vel.y += this.body.accel.y * me.timer.tick;
+        } else if( this.direction == 'left_up' ) {
+            this.body.vel.x -= this.body.accel.x * me.timer.tick;
+            this.body.vel.y -= this.body.accel.y * me.timer.tick;
+        } else {
+            bRemove = true;
+        }
+        if( this.pos.x > me.game.viewport.bounds.width || this.pos.x <= 0 ) {
+            bRemove = true;
+        }
+        if( this.pos.y > me.game.viewport.bounds.height || this.pos.y <= 0 ) {
+            bRemove = true;
+        }
         this.body.update();
+
+        if( this.direction == 'right' && this.body.vel.x <= 0 ) {
+            bRemove = true;
+        } else if( this.direction == 'left' && this.body.vel.x >= 0 ) {
+            bRemove = true;
+        } else if( this.direction == 'up' && this.body.vel.y >= 0 ) {
+            bRemove = true;
+        } else if( this.direction == 'down' && this.body.vel.y <= 0 ) {
+            bRemove = true;
+        } else if( this.direction == 'right_down' && ( this.body.vel.y <= 0 || this.body.vel.x <= 0 ) ){
+            bRemove = true;
+        } else if( this.direction == 'right_up' && ( this.body.vel.y >= 0 || this.body.vel.x <= 0 ) ){
+            bRemove = true;
+        } else if( this.direction == 'left_down' && ( this.body.vel.y <= 0 || this.body.vel.x >= 0 ) ){
+            bRemove = true;
+        } else if( this.direction == 'left_up' && ( this.body.vel.y >= 0 || this.body.vel.x >= 0 ) ){
+            bRemove = true;
+        }
+
+        if( bRemove ) {
+            var self = this;
+            var explosion = new game.SimpleShotExplode(
+                self.pos.x,
+                self.pos.y,
+                {
+                    width: 32,
+                    height: 32
+                }
+            );
+            me.game.world.addChild( explosion, 7 );
+            me.game.world.removeChild(this);
+            return false; // do not reset to first frame
+        }
+
+        me.collision.check(this, true, this.collideHandler.bind(this), true);
         this._super(me.Entity, 'update', [dt]);
         return true;
+    },
+    collideHandler : function (response) {
+        if( response.b.body.collisionType ) {
+//            me.game.world.removeChild(this);
+            return false;
+        }
+//        switch (response.b.body.collisionType) {
+//            case me.collision.types.ENEMY_OBJECT : {
+//                if (!response.b.isMovingEnemy) {
+//                    // spike or any other fixed danger
+//                    this.body.vel.y -= this.body.maxVel.y * me.timer.tick;
+//                    this.hurt();
+//                } else {
+//                    // a regular moving enemy entity
+//                    if ((response.overlapV.y>0) && this.body.falling) {
+//                        // jump
+//                        this.body.vel.y -= this.body.maxVel.y * me.timer.tick;
+//                    } else {
+//                        this.pos.sub(response.overlapV);
+//                        this.hurt();
+//                        this.updateBounds();
+//                    }
+//                }
+//                break;
+//            }
+//            default : break;
+//        }
+    }
+});
+
+game.SimpleShotExplode = me.Entity.extend({
+    init: function(x, y, settings) {
+        settings.spriteheight = 32;
+        settings.spritewidth = 32;
+        settings.image = "bullet_image";
+        this._super(me.Entity, 'init', [x, y , settings]);
+        this.body.setCollisionMask(me.collision.types.NO_OBJECT);
+        this.renderable.addAnimation( "explode", [1, 2, 3], 45 );
+        this.renderable.setCurrentAnimation("explode", (function () {
+            me.game.world.removeChild(this);
+            return false; // do not reset to first frame
+        }).bind(this));
+        this.anchorPoint.set(0.5, 0.5);
+        this.alwaysUpdate = true;
+        this.body.setVelocity(0, 0);
+        this.body.setFriction(0, 0);
     }
 });
