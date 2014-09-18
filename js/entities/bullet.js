@@ -9,6 +9,7 @@ game.SimpleShot = me.Entity.extend({
         this.direction = game.data.playerDirection;
         // player can exit the viewport (jumping, falling into a hole, etc.)
         this.alwaysUpdate = true;
+        this.isBullet = true;
 
 //        this.body.setCollisionMask(me.collision.types.NO_OBJECT);
 
@@ -81,52 +82,32 @@ game.SimpleShot = me.Entity.extend({
         } else if( this.direction == 'left_up' && ( this.body.vel.y >= 0 || this.body.vel.x >= 0 ) ){
             bRemove = true;
         }
-
         if( bRemove ) {
-            var self = this;
-            var explosion = new game.SimpleShotExplode(
-                self.pos.x,
-                self.pos.y,
-                {
-                    width: 32,
-                    height: 32
-                }
-            );
-            me.game.world.addChild( explosion, 7 );
-            me.game.world.removeChild(this);
-            return false; // do not reset to first frame
+            return this.explode();
         }
-
         me.collision.check(this, true, this.collideHandler.bind(this), true);
         this._super(me.Entity, 'update', [dt]);
         return true;
     },
+    explode: function() {
+        var self = this;
+        var explosion = new game.SimpleShotExplode(
+            self.pos.x,
+            self.pos.y,
+            {
+                width: 32,
+                height: 32
+            }
+        );
+        me.game.world.addChild( explosion, 7 );
+        me.game.world.removeChild(this);
+        return false; // do not reset to first frame
+    },
     collideHandler : function (response) {
-        if( response.b.body.collisionType ) {
-//            me.game.world.removeChild(this);
-            return false;
+        if( typeof( response.b.isEnemy ) != "undefined" ){
+            game.data.score += 1;
+            return this.explode();
         }
-//        switch (response.b.body.collisionType) {
-//            case me.collision.types.ENEMY_OBJECT : {
-//                if (!response.b.isMovingEnemy) {
-//                    // spike or any other fixed danger
-//                    this.body.vel.y -= this.body.maxVel.y * me.timer.tick;
-//                    this.hurt();
-//                } else {
-//                    // a regular moving enemy entity
-//                    if ((response.overlapV.y>0) && this.body.falling) {
-//                        // jump
-//                        this.body.vel.y -= this.body.maxVel.y * me.timer.tick;
-//                    } else {
-//                        this.pos.sub(response.overlapV);
-//                        this.hurt();
-//                        this.updateBounds();
-//                    }
-//                }
-//                break;
-//            }
-//            default : break;
-//        }
     }
 });
 
@@ -138,6 +119,8 @@ game.SimpleShotExplode = me.Entity.extend({
         this._super(me.Entity, 'init', [x, y , settings]);
         this.body.setCollisionMask(me.collision.types.NO_OBJECT);
         this.renderable.addAnimation( "explode", [1, 2, 3], 45 );
+        game.soundplayer.src = soundBank.shoot[1];
+//        game.soundplayer.play();
         this.renderable.setCurrentAnimation("explode", (function () {
             me.game.world.removeChild(this);
             return false; // do not reset to first frame

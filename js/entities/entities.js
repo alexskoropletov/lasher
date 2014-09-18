@@ -201,44 +201,40 @@ game.PlayerEntity = me.Entity.extend({
 
 /**
  * a coin (collectable) entiry
- */
-game.Enemy1 = me.CollectableEntity.extend({
-    /**
-     * constructor
-     */
-    init: function (x, y, settings) {
-
-        // call the super constructor
-        this._super(me.CollectableEntity, 'init', [x, y , settings]);
-
-        // add the coin sprite as renderable
-        this.renderable = game.texture.createSpriteFromName("coin.png");
-
-        // set the renderable position to center
-        this.anchorPoint.set(0.5, 0.5);
-
-        // set our collision callback function
-        this.body.onCollision = this.onCollision.bind(this);
-
-    },
-
-    /**
-     * collision handling
-     */
-    onCollision : function (res, obj) {
-        // do something when collide
-//        me.audio.play("cling", false);
-        game.soundplayer.src = soundBank.coin[0];
-        game.soundplayer.play();
-        // give some score
-        game.data.score += 250;
-
-        //avoid further collision and delete it
-        this.body.setCollisionMask(me.collision.types.NO_OBJECT);
-
-        me.game.world.removeChild(this);
-    }
-});
+// */
+//game.Enemy1 = me.CollectableEntity.extend({
+//    /**
+//     * constructor
+//     */
+//    init: function (x, y, settings) {
+//
+//        // call the super constructor
+//        this._super(me.CollectableEntity, 'init', [x, y , settings]);
+//
+//        // add the coin sprite as renderable
+//        this.renderable = game.texture.createSpriteFromName("coin.png");
+//
+//        // set the renderable position to center
+//        this.anchorPoint.set(0.5, 0.5);
+//
+//        // set our collision callback function
+//        this.body.onCollision = this.onCollision.bind(this);
+//
+//    },
+//
+//    /**
+//     * collision handling
+//     */
+//    onCollision : function (res, obj) {
+//        if( typeof( res.b.isBullet ) != 'undefined' ) {
+//            game.soundplayer.src = soundBank.coin[0];
+//            game.soundplayer.play();
+//            game.data.score += 1;
+//            this.body.setCollisionMask(me.collision.types.NO_OBJECT);
+//            me.game.world.removeChild(this);
+//        }
+//    }
+//});
 
 
 

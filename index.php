@@ -1,3 +1,6 @@
+<?php
+
+?>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -29,6 +32,7 @@
 <script type="text/javascript" src="js/entities/entities.js"></script>
 <script type="text/javascript" src="js/entities/target_location_cross.js"></script>
 <script type="text/javascript" src="js/entities/bullet.js"></script>
+<script type="text/javascript" src="js/entities/enemy1.js"></script>
 <script type="text/javascript" src="js/entities/HUD.js"></script>
 
 <script type="text/javascript" src="js/screens/play.js"></script>

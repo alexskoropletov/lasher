@@ -12,7 +12,7 @@ var game = {
     data : {
         // score
         canFire: true,
-        fireRate: 100,
+        fireRate: 500,
         fireInterval: null,
         rightKey: false,
         playerDirection: "right",
@@ -84,7 +84,7 @@ var game = {
                     width: 32
                 }
             );
-            me.game.world.addChild( target, 10000 );
+            me.game.world.addChild( target, 10 );
         }
     },
 
