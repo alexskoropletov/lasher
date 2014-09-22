@@ -33,6 +33,16 @@ game.PlayScreen = me.ScreenObject.extend({
         me.game.world.addChild(this.HUD);
 
         game.player = me.game.world.getChildByName("mainPlayer")[0];
+//        var fogOfWar = new game.PlayerFogOfWar(
+//            game.player.pos.x - 80,
+//            game.player.pos.y - 80,
+//            {
+//                width: 160,
+//                height: 160
+//            }
+//        );
+//        me.game.world.addChild( fogOfWar, 800 );
+//        game.fogOfWar = fogOfWar;
 
         // play some music
 //        me.audio.playTrack("DST-GameForest");

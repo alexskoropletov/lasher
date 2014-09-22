@@ -11,6 +11,7 @@ var game = {
      */
     data : {
         // score
+        fogOfWarClearRadius: 2,
         canFire: true,
         fireRate: 500,
         fireInterval: null,
@@ -31,6 +32,7 @@ var game = {
     soundplayer: new Audio(),
 
     player: null,
+    fogOfWar: null,
 
 /**
      *
@@ -88,36 +90,35 @@ var game = {
         }
     },
 
-    fireBullet: function() {
-//        if( game.data.canFire ) {
-//            game.data.canFire = false;
-            var simple_shot = new game.SimpleShot(
-                game.player.pos.x,
-                game.player.pos.y,
-                {
-                    width: 32,
-                    height: 32
-                }
-            );
-            me.game.world.addChild( simple_shot, 6 );
-//            setTimeout( function() {
-//                game.data.canFire = true;
-//            }, 500 );
-//        }
+    fireBullet: function(x, y) {
+        var simple_shot = new game.SimpleShot(
+            game.player.pos.x,
+            game.player.pos.y,
+            {
+                width: 32,
+                height: 32
+            },
+            x,
+            y
+        );
+        me.game.world.addChild( simple_shot, 6 );
     },
 
     mouseDown: function( e ) {
         game.data.cursorDown = true;
-        game.data.playerTargetChanged = true;
-        game.data.playerTargetX = e.gameWorldX;
-        game.data.playerTargetY = e.gameWorldY;
-        game.showTargetLocationCross(e.gameWorldX, e.gameWorldY);
+        if(e.button == me.input.mouse.LEFT ) {
+            game.data.playerTargetChanged = true;
+            game.data.playerTargetX = e.gameWorldX;
+            game.data.playerTargetY = e.gameWorldY;
+            game.showTargetLocationCross(e.gameWorldX, e.gameWorldY);
+        }
         if(e.button == me.input.mouse.RIGHT ) {
-//            game.data.rightKey = true;
-            game.fireBullet();
+            game.data.rightKey = true;
+            game.fireBullet(e.gameWorldX, e.gameWorldY);
+            me.timer.clearInterval( game.data.fireInterval );
             game.data.fireInterval = me.timer.setInterval(
                 function() {
-                    game.fireBullet();
+                    game.fireBullet(e.gameWorldX, e.gameWorldY);
                 },
                 game.data.fireRate
             );
@@ -136,11 +137,20 @@ var game = {
         game.data.cursorDown = false;
     },
     mouseMove: function( e ) {
-        if( game.data.cursorDown ) {
+        if( game.data.cursorDown && !game.data.rightKey ) {
             game.showTargetLocationCross(e.gameWorldX, e.gameWorldY);
             game.data.playerTargetChanged = true;
             game.data.playerTargetX = e.gameWorldX;
             game.data.playerTargetY = e.gameWorldY;
+        } else if( game.data.cursorDown && game.data.rightKey ) {
+            me.timer.clearInterval( game.data.fireInterval );
+            game.fireBullet(e.gameWorldX, e.gameWorldY);
+            game.data.fireInterval = me.timer.setInterval(
+                function() {
+                    game.fireBullet(e.gameWorldX, e.gameWorldY);
+                },
+                game.data.fireRate
+            );
         }
     },
 
@@ -161,6 +171,7 @@ var game = {
         me.pool.register("possibleEnemy", game.Enemy1);
         me.pool.register("tager_location", game.TargetLocationCross);
         me.pool.register("simple_shot", game.SimpleShot);
+//        me.pool.register("fogofwarcracher", game.PlayerFogOfWar);
 
         // load the texture atlas file
         // this will be used by object entities later

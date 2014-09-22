@@ -1,61 +1,70 @@
 game.SimpleShot = me.Entity.extend({
-    init: function(x, y, settings) {
-
+    init: function(x, y, settings, targetX, targetY) {
         settings.spriteheight = 32;
         settings.spritewidth = 32;
         settings.image = "bullet_image";
-            // call the constructor
         this._super(me.Entity, 'init', [x, y , settings]);
         this.direction = game.data.playerDirection;
-        // player can exit the viewport (jumping, falling into a hole, etc.)
         this.alwaysUpdate = true;
         this.isBullet = true;
-
-//        this.body.setCollisionMask(me.collision.types.NO_OBJECT);
-
-        // walking & jumping speed
-        this.body.setVelocity(16, 16);
-
+        this.xVel = 0;
+        this.yVel = 0;
+        this.previousX = x;
+        this.previousY = y;
+        pathWidth = Math.abs( targetX - x );
+        pathHeight = Math.abs( targetY - y );
+        if( targetX > x ) {
+            this.verticalDirection = "right";
+        } else {
+            this.verticalDirection = "left";
+        }
+        if( targetY > y ) {
+            this.horixzontalDirection = "down";
+        } else {
+            this.horixzontalDirection = "up";
+        }
+        if( pathWidth > pathHeight ) {
+            this.yVel = Math.round( 16 * (pathHeight / pathWidth ) );
+            this.xVel = 16;
+            this.body.setVelocity( 16, this.yVel ? this.yVel : 0 );
+        } else {
+            this.xVel = Math.round( 16 * (pathWidth / pathHeight) );
+            this.yVel = 16;
+            this.body.setVelocity( this.xVel ? this.xVel : 0, 16 );
+        }
         this.body.addShape(
             new me.Ellipse( 16, 16, 8, 8 )
         );
         this.body.setShape(0);
-
-        this.renderable.addAnimation( "idle",            [0], 0 );
-//        this.renderable.addAnimation( "explode",         [1, 2, 3], 45 );
+        this.renderable.addAnimation( "idle", [0], 0 );
         this.renderable.setCurrentAnimation("idle");
-
-        // set the renderable position to bottom center
         this.anchorPoint.set(0.5, 0.5);
     },
-
+    getGCD: function(x, y) {
+        var w;
+        while (y != 0) {
+            w = x % y;
+            x = y;
+            y = w;
+        }
+        return x;
+    },
     /* -----
      update the player pos
      ------            */
     update : function (dt) {
         var bRemove = false;
-        if( this.direction == 'right' ) {
+        this.previousX = this.pos.x;
+        this.previousY = this.pos.y;
+        if( this.verticalDirection == "right" ) {
             this.body.vel.x += this.body.accel.x * me.timer.tick;
-        } else if( this.direction == 'left' ) {
-            this.body.vel.x -= this.body.accel.x * me.timer.tick;
-        } else if( this.direction == 'up' ) {
-            this.body.vel.y -= this.body.accel.y * me.timer.tick;
-        } else if( this.direction == 'down' ) {
-            this.body.vel.y += this.body.accel.y * me.timer.tick;
-        } else if( this.direction == 'right_down' ) {
-            this.body.vel.x += this.body.accel.x * me.timer.tick;
-            this.body.vel.y += this.body.accel.y * me.timer.tick;
-        } else if( this.direction == 'right_up' ) {
-            this.body.vel.x += this.body.accel.x * me.timer.tick;
-            this.body.vel.y -= this.body.accel.y * me.timer.tick;
-        } else if( this.direction == 'left_down' ) {
-            this.body.vel.x -= this.body.accel.x * me.timer.tick;
-            this.body.vel.y += this.body.accel.y * me.timer.tick;
-        } else if( this.direction == 'left_up' ) {
-            this.body.vel.x -= this.body.accel.x * me.timer.tick;
-            this.body.vel.y -= this.body.accel.y * me.timer.tick;
         } else {
-            bRemove = true;
+            this.body.vel.x -= this.body.accel.x * me.timer.tick;
+        }
+        if( this.horixzontalDirection == "down" ) {
+            this.body.vel.y += this.body.accel.y * me.timer.tick;
+        } else {
+            this.body.vel.y -= this.body.accel.y * me.timer.tick;
         }
         if( this.pos.x > me.game.viewport.bounds.width || this.pos.x <= 0 ) {
             bRemove = true;
@@ -64,22 +73,13 @@ game.SimpleShot = me.Entity.extend({
             bRemove = true;
         }
         this.body.update();
-
-        if( this.direction == 'right' && this.body.vel.x <= 0 ) {
+        if( this.previousX == this.pos.x && this.xVel > 0 ) {
             bRemove = true;
-        } else if( this.direction == 'left' && this.body.vel.x >= 0 ) {
+        }
+        if( this.previousY == this.pos.y && this.yVel > 0 ) {
             bRemove = true;
-        } else if( this.direction == 'up' && this.body.vel.y >= 0 ) {
-            bRemove = true;
-        } else if( this.direction == 'down' && this.body.vel.y <= 0 ) {
-            bRemove = true;
-        } else if( this.direction == 'right_down' && ( this.body.vel.y <= 0 || this.body.vel.x <= 0 ) ){
-            bRemove = true;
-        } else if( this.direction == 'right_up' && ( this.body.vel.y >= 0 || this.body.vel.x <= 0 ) ){
-            bRemove = true;
-        } else if( this.direction == 'left_down' && ( this.body.vel.y <= 0 || this.body.vel.x >= 0 ) ){
-            bRemove = true;
-        } else if( this.direction == 'left_up' && ( this.body.vel.y >= 0 || this.body.vel.x >= 0 ) ){
+        }
+        if( this.body.vel.y == 0 && this.body.vel.x == 0 ){
             bRemove = true;
         }
         if( bRemove ) {

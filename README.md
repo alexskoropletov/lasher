@@ -11,6 +11,8 @@ Powered by:
 
 Demo
 ====
+
 http://lasher.annpalna.ru/
+
 Left click - go to the point
 Right click - go to the point and fire

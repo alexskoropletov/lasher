@@ -5,8 +5,8 @@ game.Enemy1 = me.Entity.extend({
         this.alwaysUpdate = true;
         this.walkThisPath = [];
         this.isEnemy = 1;
-        this.body.setVelocity(2, 2);
-        this.body.setFriction(1, 1);
+        this.body.setVelocity(1, 1);
+        this.body.setFriction(0.5, 0.5);
         this.renderable.addAnimation( "idle",            [0, 0, 0, 0, 8, 9, 10, 11 ], 50 );
         this.renderable.addAnimation( "horizontal",      [0, 1, 2,  1], 45 );
         this.renderable.addAnimation( "vertical",        [0, 3, 4,  3], 45 );

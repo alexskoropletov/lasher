@@ -23,7 +23,8 @@ game.PlayerEntity = me.Entity.extend({
         this.walkThisPath = [];
 
         // walking & jumping speed
-        this.body.setVelocity(8, 8);
+        this.body.setVelocity(2, 2);
+//        this.body.setVelocity(8, 8);
         this.body.setFriction(0, 0);
 
         this.dying = false;
@@ -147,7 +148,12 @@ game.PlayerEntity = me.Entity.extend({
         }
         // check for collision with environment
         this.body.update();
+        this.clearFog(this.currentTileX, this.currentTileY);
+
+//        game.fogOfWar.body.vel.x = this.body.vel.x;
+//        game.fogOfWar.body.vel.y = this.body.vel.y;
         // check for collision with sthg
+
         me.collision.check(this, true, this.collideHandler.bind(this), true);
         // check if we moved (a "stand" animation would definitely be cleaner)
         if (!this.body.vel.y && !this.body.vel.x) {
@@ -155,6 +161,22 @@ game.PlayerEntity = me.Entity.extend({
         }
         this._super(me.Entity, 'update', [dt]);
         return true;
+    },
+
+    clearFog: function( x, y ) {
+        for( k in me.game.currentLevel.mapLayers ) {
+            if( me.game.currentLevel.mapLayers[k].name == 'fogofwar' ) {
+                for( var dX = ( x - game.data.fogOfWarClearRadius ); dX < ( x + game.data.fogOfWarClearRadius ); dX++ ) {
+                    for( var dY = ( y - game.data.fogOfWarClearRadius ); dY < ( y + game.data.fogOfWarClearRadius ); dY++ ) {
+                        if( dX >= 0 && dX <= me.game.currentLevel.mapLayers[k].cols ) {
+                            if( dY >= 0 && dY <= me.game.currentLevel.mapLayers[k].rows ) {
+                                me.game.currentLevel.mapLayers[k].clearTile( dX, dY );
+                            }
+                        }
+                    }
+                }
+            }
+        }
     },
     
     /**
@@ -199,213 +221,29 @@ game.PlayerEntity = me.Entity.extend({
     }
 });
 
-/**
- * a coin (collectable) entiry
-// */
-//game.Enemy1 = me.CollectableEntity.extend({
-//    /**
-//     * constructor
-//     */
-//    init: function (x, y, settings) {
-//
-//        // call the super constructor
-//        this._super(me.CollectableEntity, 'init', [x, y , settings]);
-//
-//        // add the coin sprite as renderable
-//        this.renderable = game.texture.createSpriteFromName("coin.png");
-//
-//        // set the renderable position to center
-//        this.anchorPoint.set(0.5, 0.5);
-//
-//        // set our collision callback function
-//        this.body.onCollision = this.onCollision.bind(this);
-//
-//    },
-//
-//    /**
-//     * collision handling
-//     */
-//    onCollision : function (res, obj) {
-//        if( typeof( res.b.isBullet ) != 'undefined' ) {
-//            game.soundplayer.src = soundBank.coin[0];
-//            game.soundplayer.play();
-//            game.data.score += 1;
-//            this.body.setCollisionMask(me.collision.types.NO_OBJECT);
-//            me.game.world.removeChild(this);
-//        }
-//    }
-//});
 
-
-
-/**
- * An enemy entity
- * follow a horizontal path defined by the box size in Tiled
- */
-game.PathEnemyEntity = me.Entity.extend({    
-    /**
-     * constructor
-     */
-    init: function (x, y, settings) {
-
-        // save the area size defined in Tiled
-        var width = settings.width || settings.spritewidth;
-        var height = settings.height || settings.spriteheight;
-
-        // adjust the setting size to the sprite one
-        settings.width = settings.spritewidth;
-        settings.height = settings.spriteheight;
-
-        // call the super constructor
+game.PlayerFogOfWar = me.Entity.extend({
+    init: function(x, y, settings) {
+        settings.spriteheight = 160;
+        settings.spritewidth = 160;
+        settings.image = "forofwarcrasher";
         this._super(me.Entity, 'init', [x, y , settings]);
-        
-        // set start/end position based on the initial area size
-        x = this.pos.x;
-        this.startX = x;
-        this.endX   = x + width - settings.spritewidth
-        this.pos.x  = x + width - settings.spritewidth;
-        // update the entity bounds since we manually change the entity position
-        this.updateBounds();
-        
-        // apply gravity setting if specified
-        this.body.gravity = settings.gravity || me.sys.gravity;
-
-        this.walkLeft = false;
-
-        // walking & jumping speed
-        this.body.setVelocity(settings.velX || 1, settings.velY || 6);
-        
-        // set a "enemyObject" type
-        this.collisionType = me.collision.types.ENEMY_OBJECT;
-                
-        // don't update the entities when out of the viewport
-        this.alwaysUpdate = false;
-        
-        // set our collision callback function
-        this.body.onCollision = this.onCollision.bind(this);
-        
-        // a specific flag to recognize these enemies
-        this.isMovingEnemy = true;
+//        this.alwaysUpdate = true;
+        this.body.addShape(
+            new me.Ellipse( 80, 80, 160, 160 )
+        );
+        this.body.setShape(0);
+        this.anchorPoint.set(80, 80);
     },
-        
-    
-    /**
-     * manage the enemy movement
-     */
     update : function (dt) {
-        
-        if (this.alive)    {
-            if (this.walkLeft && this.pos.x <= this.startX) {
-                this.body.vel.x = this.body.accel.x * me.timer.tick;
-                this.walkLeft = false;
-                this.flipX(true);
-            } else if (!this.walkLeft && this.pos.x >= this.endX) {
-                this.body.vel.x = -this.body.accel.x * me.timer.tick;
-                this.walkLeft = true;
-                this.flipX(false);
-            }
-        
-            // check & update movement
-            this.body.update();
-
-        } 
-
-        // return true if we moved of if flickering
-        return (this._super(me.Entity, 'update', [dt]) || this.body.vel.x != 0 || this.body.vel.y != 0);
+//        this.body.pos.x = game.player.pos.x;
+//        this.body.pos.y = game.player.pos.y;
+        this.body.update();
+        me.collision.check(this, true, this.collideHandler.bind(this), true);
+        this._super(me.Entity, 'update', [dt]);
+        return true;
     },
-    
-    /**
-     * collision handle
-     */
-    onCollision : function (res, obj) {
-        // res.y >0 means touched by something on the bottom
-        // which mean at top position for this one
-        if (this.alive && (res.y > 0) && obj.body.falling) {
-            // make it dead
-            this.alive = false;
-            //avoid further collision and delete it
-            this.body.setCollisionMask(me.collision.types.NO_OBJECT);
-            // set dead animation
-            this.renderable.setCurrentAnimation("dead");
-            // make it flicker and call destroy once timer finished
-            var self = this;
-            this.renderable.flicker(750, function(){me.game.world.removeChild(self)});
-            // dead sfx
-            me.audio.play("enemykill", false);
-            // give some score
-            game.data.score += 150;
-        }
-    }
-
-});
-
-/**
- * An Slime enemy entity
- * follow a horizontal path defined by the box size in Tiled
- */
-game.SlimeEnemyEntity = game.PathEnemyEntity.extend({    
-    /**
-     * constructor
-     */
-    init: function (x, y, settings) {
-        // super constructor
-        this._super(game.PathEnemyEntity, 'init', [x, y, settings]);
-    
-        // set a renderable
-        this.renderable = game.texture.createAnimationFromName([
-            "slime_normal.png", "slime_walk.png", "slime_dead.png"
-        ]);
-
-        // custom animation speed ?
-        if (settings.animationspeed) {
-            this.renderable.animationspeed = settings.animationspeed; 
-        }
-
-        // walking animatin
-        this.renderable.addAnimation ("walk", ["slime_normal.png", "slime_walk.png"]);
-        // dead animatin
-        this.renderable.addAnimation ("dead", ["slime_dead.png"]);
-        
-        // set default one
-        this.renderable.setCurrentAnimation("walk");
-
-        // set the renderable position to bottom center
-        this.anchorPoint.set(0.5, 1.0);
-        
-    }
-});
-
-/**
- * An Fly enemy entity
- * follow a horizontal path defined by the box size in Tiled
- */
-game.FlyEnemyEntity = game.PathEnemyEntity.extend({    
-    /**
-     * constructor
-     */
-    init: function (x, y, settings) {
-        // super constructor
-        this._super(game.PathEnemyEntity, 'init', [x, y, settings]);
-    
-        // set a renderable
-        this.renderable = game.texture.createAnimationFromName([
-            "fly_normal.png", "fly_fly.png", "fly_dead.png"
-        ]);
-
-        // custom animation speed ?
-        if (settings.animationspeed) {
-            this.renderable.animationspeed = settings.animationspeed; 
-        }
-
-        // walking animatin
-        this.renderable.addAnimation ("walk", ["fly_normal.png", "fly_fly.png"]);
-        // dead animatin
-        this.renderable.addAnimation ("dead", ["fly_dead.png"]);
-        
-        // set default one
-        this.renderable.setCurrentAnimation("walk");
-
-        // set the renderable position to bottom center
-        this.anchorPoint.set(0.5, 1.0);        
+    collideHandler : function (response) {
+//        console.log( response );
     }
 });
