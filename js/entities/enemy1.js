@@ -90,19 +90,30 @@ game.Enemy1 = me.Entity.extend({
     },
     collideHandler : function (response) {
         if( typeof( response.b.isBullet ) != "undefined" ){
+            this.body.setCollisionMask(me.collision.types.NO_OBJECT);
             var self = this;
-            if( response.b.direction == 'right' ||  response.b.direction == 'left' ) {
+            if( response.b.completeDirection == 'right' || response.b.completeDirection == 'left' ) {
                 var death = new game.EnemyDeathHorizontal(
-                    self.pos.x + ( response.b.direction == 'right' ? 16 : -32 ),
+                    self.pos.x + ( response.b.completeDirection == 'right' ? 16 : -32 ),
                     self.pos.y,
                     {
                         width: 64,
                         height: 32
                     },
-                    response.b.direction
+                    response.b.completeDirection
                 );
                 me.game.world.addChild( death, 7 );
-
+            } else if( response.b.completeDirection == 'down' || response.b.completeDirection == 'up'  ) {
+                var death = new game.EnemyDeathVertical(
+                    self.pos.x,
+                    self.pos.y + ( response.b.completeDirection == 'down' ? 16 : -16 ),
+                    {
+                        width: 64,
+                        height: 32
+                    },
+                    response.b.completeDirection
+                );
+                me.game.world.addChild( death, 7 );
             }
             me.game.world.removeChild(this);
             return false;
@@ -119,6 +130,26 @@ game.EnemyDeathHorizontal = me.Entity.extend({
         this.body.setCollisionMask(me.collision.types.NO_OBJECT);
         this.renderable.addAnimation( "death_right", [12, 13, 14, 15], 40 );
         this.renderable.addAnimation( "death_left", [16, 17, 18, 19], 40 );
+        this.renderable.setCurrentAnimation("death_" + direction, (function () {
+            me.game.world.removeChild(this);
+            return false; // do not reset to first frame
+        }).bind(this));
+        this.anchorPoint.set(0.5, 0.5);
+        this.alwaysUpdate = true;
+        this.body.setVelocity(0, 0);
+        this.body.setFriction(0, 0);
+    }
+});
+
+game.EnemyDeathVertical = me.Entity.extend({
+    init: function(x, y, settings, direction) {
+        settings.spriteheight = 64;
+        settings.spritewidth = 32;
+        settings.image = "enemy_image";
+        this._super(me.Entity, 'init', [x, y , settings]);
+        this.body.setCollisionMask(me.collision.types.NO_OBJECT);
+        this.renderable.addAnimation( "death_up", [28, 29, 30, 31], 40 );
+        this.renderable.addAnimation( "death_down", [24, 25, 26, 27], 40 );
         this.renderable.setCurrentAnimation("death_" + direction, (function () {
             me.game.world.removeChild(this);
             return false; // do not reset to first frame

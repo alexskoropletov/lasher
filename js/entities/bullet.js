@@ -32,6 +32,14 @@ game.SimpleShot = me.Entity.extend({
             this.yVel = 16;
             this.body.setVelocity( this.xVel ? this.xVel : 0, 16 );
         }
+        this.completeDirection = this.verticalDirection + "_" + this.horixzontalDirection;
+        if( this.body.accel.x <= 4  ) {
+            this.completeDirection = this.horixzontalDirection;
+        } else if( this.body.accel.x > 4  ) {
+            if( this.body.accel.y <= 4 ) {
+                this.completeDirection = this.verticalDirection;
+            }
+        }
         this.body.addShape(
             new me.Ellipse( 16, 16, 8, 8 )
         );

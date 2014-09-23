@@ -12,6 +12,7 @@ var game = {
     data : {
         // score
         fogOfWarClearRadius: 2,
+        fogOfWarClearRadiusMax: 4,
         canFire: true,
         fireRate: 500,
         fireInterval: null,

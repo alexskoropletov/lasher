@@ -20,7 +20,6 @@ game.resources = [
     {name: "bullet_image",     type:"image",    src: "data/img/bullet.png"},
     {name: "enemy_image",     type:"image",    src: "data/img/enemy_image.png"},
     {name: "fogofwar",     type:"image",    src: "data/img/fogofwar.png"},
-    {name: "forofwarcrasher",     type:"image",    src: "data/img/forofwarcrasher.png"},
 
         
     /* Maps. 

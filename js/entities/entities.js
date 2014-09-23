@@ -23,8 +23,8 @@ game.PlayerEntity = me.Entity.extend({
         this.walkThisPath = [];
 
         // walking & jumping speed
-        this.body.setVelocity(2, 2);
-//        this.body.setVelocity(8, 8);
+//        this.body.setVelocity(2, 2);
+        this.body.setVelocity(8, 8);
         this.body.setFriction(0, 0);
 
         this.dying = false;
@@ -84,12 +84,12 @@ game.PlayerEntity = me.Entity.extend({
             }
         }
 
-        if( this.walkThisPath[0] && this.walkThisPath[0].x == this.currentTileX && this.walkThisPath[0].y == this.currentTileY ) {
+        if( this.walkThisPath[0] && this.walkThisPath[0].x == this.currentTileX && this.walkThisPath[0].y == this.currentTileY  && this.walkThisPath[0].x == this.currentTileXExtra && this.walkThisPath[0].y == this.currentTileYExtra ) {
             this.walkThisPath.splice(0, 1);
         }
         if( this.walkThisPath[0] ) {
             if( this.walkThisPath[0].x != this.currentTileX ) {
-                if( this.walkThisPath[0].x > this.currentTileX ) {
+                if( this.walkThisPath[0].x >= this.currentTileX ) {
                     this.body.vel.x += this.body.accel.x * me.timer.tick;
                     this.movingX = 1;
                 } else {
@@ -98,7 +98,7 @@ game.PlayerEntity = me.Entity.extend({
                 }
             }
             if( this.walkThisPath[0].y != this.currentTileY ) {
-                if( this.walkThisPath[0].y > this.currentTileY ) {
+                if( this.walkThisPath[0].y >= this.currentTileY ) {
                     this.body.vel.y += this.body.accel.y * me.timer.tick;
                     this.movingY = 1;
                 } else {
@@ -107,14 +107,14 @@ game.PlayerEntity = me.Entity.extend({
                 }
             }
             if( this.currentTileX != this.currentTileXExtra && !this.movingX ) {
-                if( this.currentTileX > this.currentTileXExtra ) {
+                if( this.currentTileX >= this.currentTileXExtra ) {
                     this.movingX = 1;
                 } else {
                     this.movingX = -1;
                 }
             }
             if( this.currentTileY != this.currentTileYExtra && !this.movingY ) {
-                if( this.currentTileY > this.currentTileYExtra ) {
+                if( this.currentTileY >= this.currentTileYExtra ) {
                     this.movingY = 1;
                 } else {
                     this.movingY = -1;
@@ -149,9 +149,6 @@ game.PlayerEntity = me.Entity.extend({
         // check for collision with environment
         this.body.update();
         this.clearFog(this.currentTileX, this.currentTileY);
-
-//        game.fogOfWar.body.vel.x = this.body.vel.x;
-//        game.fogOfWar.body.vel.y = this.body.vel.y;
         // check for collision with sthg
 
         me.collision.check(this, true, this.collideHandler.bind(this), true);
@@ -166,8 +163,8 @@ game.PlayerEntity = me.Entity.extend({
     clearFog: function( x, y ) {
         for( k in me.game.currentLevel.mapLayers ) {
             if( me.game.currentLevel.mapLayers[k].name == 'fogofwar' ) {
-                for( var dX = ( x - game.data.fogOfWarClearRadius ); dX < ( x + game.data.fogOfWarClearRadius ); dX++ ) {
-                    for( var dY = ( y - game.data.fogOfWarClearRadius ); dY < ( y + game.data.fogOfWarClearRadius ); dY++ ) {
+                for( var dX = ( x - game.data.fogOfWarClearRadiusMax ); dX <= ( x + game.data.fogOfWarClearRadiusMax ); dX++ ) {
+                    for( var dY = ( y - game.data.fogOfWarClearRadiusMax ); dY <= ( y + game.data.fogOfWarClearRadiusMax ); dY++ ) {
                         if( dX >= 0 && dX <= me.game.currentLevel.mapLayers[k].cols ) {
                             if( dY >= 0 && dY <= me.game.currentLevel.mapLayers[k].rows ) {
                                 me.game.currentLevel.mapLayers[k].clearTile( dX, dY );
@@ -218,32 +215,5 @@ game.PlayerEntity = me.Entity.extend({
             me.game.viewport.fadeIn("#FFFFFF", 75);
             me.audio.play("die", false);
         }
-    }
-});
-
-
-game.PlayerFogOfWar = me.Entity.extend({
-    init: function(x, y, settings) {
-        settings.spriteheight = 160;
-        settings.spritewidth = 160;
-        settings.image = "forofwarcrasher";
-        this._super(me.Entity, 'init', [x, y , settings]);
-//        this.alwaysUpdate = true;
-        this.body.addShape(
-            new me.Ellipse( 80, 80, 160, 160 )
-        );
-        this.body.setShape(0);
-        this.anchorPoint.set(80, 80);
-    },
-    update : function (dt) {
-//        this.body.pos.x = game.player.pos.x;
-//        this.body.pos.y = game.player.pos.y;
-        this.body.update();
-        me.collision.check(this, true, this.collideHandler.bind(this), true);
-        this._super(me.Entity, 'update', [dt]);
-        return true;
-    },
-    collideHandler : function (response) {
-//        console.log( response );
     }
 });
