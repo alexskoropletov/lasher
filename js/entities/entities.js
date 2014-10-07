@@ -22,6 +22,9 @@ game.PlayerEntity = me.Entity.extend({
 
         this.walkThisPath = [];
 
+        this.current_hp = game.data.player_max_hp * 2;
+        this.drawHealth();
+
         // walking & jumping speed
 //        this.body.setVelocity(2, 2);
         this.body.setVelocity(8, 8);
@@ -31,7 +34,7 @@ game.PlayerEntity = me.Entity.extend({
 
         // set the display around our position
         me.game.viewport.follow(this, me.game.viewport.AXIS.BOTH);
-                
+
         // enable keyboard
 //        me.input.bindKey(me.input.KEY.S,    "down");
 
@@ -106,14 +109,16 @@ game.PlayerEntity = me.Entity.extend({
                     this.movingY = -1;
                 }
             }
-            if( this.currentTileX != this.currentTileXExtra && !this.movingX ) {
+//            if( this.currentTileX != this.currentTileXExtra && !this.movingX ) {
+            if( !this.movingX ) {
                 if( this.currentTileX >= this.currentTileXExtra ) {
                     this.movingX = 1;
                 } else {
                     this.movingX = -1;
                 }
             }
-            if( this.currentTileY != this.currentTileYExtra && !this.movingY ) {
+//            if( this.currentTileY != this.currentTileYExtra && !this.movingY ) {
+            if( !this.movingY ) {
                 if( this.currentTileY >= this.currentTileYExtra ) {
                     this.movingY = 1;
                 } else {
@@ -148,6 +153,7 @@ game.PlayerEntity = me.Entity.extend({
         }
         // check for collision with environment
         this.body.update();
+//        this.redrawHealth();
         this.clearFog(this.currentTileX, this.currentTileY);
         // check for collision with sthg
 
@@ -173,6 +179,32 @@ game.PlayerEntity = me.Entity.extend({
                     }
                 }
             }
+        }
+    },
+
+//    redrawHealth: function() {
+//        if( this.hp.length ) {
+//            for( var k in this.hp ) {
+//                this.hp[k].pos.x = 10 + me.game.viewport.pos.x;
+//                this.hp[k].pos.y = 10 + me.game.viewport.pos.y;
+//            }
+//        }
+//    },
+
+    drawHealth: function() {
+        this.hp = [];
+        for( var i = 0; i < (this.current_hp / 2); i++ ) {
+            var hp = new game.PlayerLife(
+                10 + ( i * 16 ),
+                10,
+                {
+                    width: 16,
+                    height: 16
+                },
+                "health_full"
+            );
+            me.game.world.addChild( hp, 300 );
+            this.hp[ this.hp.length - 1 ] = hp;
         }
     },
     
@@ -215,5 +247,24 @@ game.PlayerEntity = me.Entity.extend({
             me.game.viewport.fadeIn("#FFFFFF", 75);
             me.audio.play("die", false);
         }
+    }
+});
+
+game.PlayerLife = me.Entity.extend({
+    init: function(x, y, settings, animation) {
+        settings.spriteheight = 16;
+        settings.spritewidth = 16;
+        settings.image = "hp";
+        this._super(me.Entity, 'init', [x, y , settings]);
+        this.animation = animation;
+        this.body.setCollisionMask(me.collision.types.NO_OBJECT);
+        this.renderable.addAnimation( "health_full", [0], 0 );
+        this.renderable.addAnimation( "health_half", [1], 0 );
+        this.renderable.setCurrentAnimation(this.animation);
+        this.anchorPoint.set(0.5, 0.5);
+        this.alwaysUpdate = true;
+        this.floating = true;
+        this.body.setVelocity(0, 0);
+        this.body.setFriction(0, 0);
     }
 });

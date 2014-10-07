@@ -11,6 +11,7 @@ var game = {
      */
     data : {
         // score
+        player_max_hp: 6,
         fogOfWarClearRadius: 2,
         fogOfWarClearRadiusMax: 4,
         canFire: true,

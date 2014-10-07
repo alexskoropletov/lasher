@@ -1,7 +1,8 @@
 game.Enemy1 = me.Entity.extend({
     init: function(x, y, settings) {
-        settings.image = "enemy_image";
+        settings.image = "enemy_image" + ( Math.floor(Math.random() * 3) + 1 );
         this._super(me.Entity, 'init', [x, y , settings]);
+        this.image = settings.image;
         this.alwaysUpdate = true;
         this.walkThisPath = [];
         this.isEnemy = 1;
@@ -98,7 +99,8 @@ game.Enemy1 = me.Entity.extend({
                     self.pos.y,
                     {
                         width: 64,
-                        height: 32
+                        height: 32,
+                        image: self.image
                     },
                     response.b.completeDirection
                 );
@@ -109,7 +111,8 @@ game.Enemy1 = me.Entity.extend({
                     self.pos.y + ( response.b.completeDirection == 'down' ? 16 : -16 ),
                     {
                         width: 64,
-                        height: 32
+                        height: 32,
+                        image: self.image
                     },
                     response.b.completeDirection
                 );
@@ -125,9 +128,13 @@ game.EnemyDeathHorizontal = me.Entity.extend({
     init: function(x, y, settings, direction) {
         settings.spriteheight = 32;
         settings.spritewidth = 64;
-        settings.image = "enemy_image";
         this._super(me.Entity, 'init', [x, y , settings]);
-        this.body.setCollisionMask(me.collision.types.NO_OBJECT);
+//        this.body.setCollisionMask(me.collision.types.NO_OBJECT);
+        this.isCorpse = true;
+        this.body.addShape(
+            new me.Rect(0, 0, 64, 32)
+        );
+        this.body.setShape(0);
         this.renderable.addAnimation( "death_right", [12, 13, 14, 15], 40 );
         this.renderable.addAnimation( "death_left", [16, 17, 18, 19], 40 );
         this.renderable.setCurrentAnimation("death_" + direction, (function () {
@@ -145,9 +152,13 @@ game.EnemyDeathVertical = me.Entity.extend({
     init: function(x, y, settings, direction) {
         settings.spriteheight = 64;
         settings.spritewidth = 32;
-        settings.image = "enemy_image";
         this._super(me.Entity, 'init', [x, y , settings]);
-        this.body.setCollisionMask(me.collision.types.NO_OBJECT);
+        this.isCorpse = true;
+        this.body.addShape(
+            new me.Rect(0, 0, 32, 64)
+        );
+        this.body.setShape(0);
+//        this.body.setCollisionMask(me.collision.types.NO_OBJECT);
         this.renderable.addAnimation( "death_up", [28, 29, 30, 31], 40 );
         this.renderable.addAnimation( "death_down", [24, 25, 26, 27], 40 );
         this.renderable.setCurrentAnimation("death_" + direction, (function () {

@@ -116,6 +116,9 @@ game.SimpleShot = me.Entity.extend({
             game.data.score += 1;
             return this.explode();
         }
+        if( typeof( response.b.isCorpse ) != "undefined" ){
+            return this.explode();
+        }
     }
 });
 

@@ -4,22 +4,20 @@ game.resources = [
      * @example
      * {name: "example", type:"image", src: "data/img/example.png"},
      */
-    {name: "tileset",        type:"image",    src: "data/img/tileset.png"},
-    {name: "sample",         type:"image",    src: "data/img/sample.png"},
     {name: "virtual_tiles",  type:"image",    src: "data/img/virtual_tiles.png"},
     {name: "player",         type:"image",    src: "data/img/player.png"},
     {name: "atascii",        type:"image",    src: "data/img/atascii_24px.png"},
-    {name: "metatiles35x35", type:"image",    src: "data/img/metatiles35x35.png"},
     {name: "metatiles32x32", type:"image",    src: "data/img/metatiles32x32.png"},
-    {name: "background",     type:"image",    src: "data/img/background.png"},
-
     {name: "floor_bg",     type:"image",    src: "data/img/floor_bg.jpg"},
-    {name: "lights",     type:"image",    src: "data/img/lights.png"},
+    {name: "floor_bg_other",     type:"image",    src: "data/img/floor_bg_other.jpg"},
 
     {name: "target_location_cross",     type:"image",    src: "data/img/target_location_cross.png"},
     {name: "bullet_image",     type:"image",    src: "data/img/bullet.png"},
-    {name: "enemy_image",     type:"image",    src: "data/img/enemy_image.png"},
+    {name: "enemy_image1",     type:"image",    src: "data/img/enemy_image1.png"},
+    {name: "enemy_image2",     type:"image",    src: "data/img/enemy_image2.png"},
+    {name: "enemy_image3",     type:"image",    src: "data/img/enemy_image3.png"},
     {name: "fogofwar",     type:"image",    src: "data/img/fogofwar.png"},
+    {name: "hp",     type:"image",    src: "data/img/hp.png"},
 
         
     /* Maps. 
