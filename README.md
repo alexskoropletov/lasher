@@ -1,13 +1,19 @@
-lasher
-======
+¡Estupendo!
+===========
 
-slasher without "S"
-html5 rouge-like game
+html5 turn-based squad combat simulator
+---------------------------------------
+
+Current version: 0
+
+This is a story about awesome guys: Juan Estupendo and Rodrigo Guay
 
 Powered by:
-- melonjs http://www.melonjs.org
-- javascript-astar https://github.com/bgrins/javascript-astar
-- jsfxr https://github.com/mneubrand/jsfxr
+-----------
+
+- [melonjs](http://www.melonjs.org)
+- [javascript-astar](https://github.com/bgrins/javascript-astar)
+- [jsfxr](https://github.com/mneubrand/jsfxr)
 
 Demo
 ====
@@ -92,3 +98,5 @@ Format: Version TODO
 `0.3.6.4.    Loot and prizes`
 
 `0.3.7.      ` **Bugfixes. Roadmap update.**
+
+`0.4.       Game setting`
