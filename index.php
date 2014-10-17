@@ -1,6 +1,3 @@
-<?php
-//echo md5( "hto59_Gjh1" );
-?>
 <!DOCTYPE HTML>
 <html>
 <head>
