@@ -14,6 +14,7 @@ Powered by:
 - [melonjs](http://www.melonjs.org)
 - [javascript-astar](https://github.com/bgrins/javascript-astar)
 - [jsfxr](https://github.com/mneubrand/jsfxr)
+- [Yummy! Font](http://www.dafont.com/yummy.font)
 
 Demo
 ====
@@ -31,7 +32,7 @@ Format: Version TODO
 
 `0.          Frontend mechanics`
 
-`0.1.        Player's base`
+`0.1.       Player's base interface`
 
 `0.1.1.      Player's level`
 

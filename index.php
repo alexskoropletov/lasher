@@ -4,10 +4,12 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-  <title>Lasher - slasher without "S" Powered By melonJS</title>
+  <title>Estupendo - html5 turn-based squad combat simulator. With all saints!</title>
   <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 </head>
 <body>
 <!-- Canvas placeholder -->
@@ -15,7 +17,8 @@
 
 <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
 <!-- melonJS Library -->
-<script type="text/javascript" src="js/build/melonJS-1.1.0.js"></script>
+<!--<script type="text/javascript" src="js/build/melonJS-1.1.0.js"></script>-->
+<script type="text/javascript" src="melonJS/build/melonJS-1.2.0-min.js"></script>
 <!-- Plugin(s) -->
 <script type="text/javascript" src="js/plugins/debug/debugPanel.js"></script>
 <!-- Pathfinder -->
@@ -29,13 +32,11 @@
 <script type="text/javascript" src="js/resources.js"></script>
 
 
-<script type="text/javascript" src="js/entities/entities.js"></script>
-<script type="text/javascript" src="js/entities/target_location_cross.js"></script>
-<script type="text/javascript" src="js/entities/bullet.js"></script>
-<script type="text/javascript" src="js/entities/enemy1.js"></script>
-<script type="text/javascript" src="js/entities/HUD.js"></script>
+<script type="text/javascript" src="js/entities/character.js"></script>
 
-<script type="text/javascript" src="js/screens/play.js"></script>
+<script type="text/javascript" src="js/screens/mainmenu.js"></script>
+<script type="text/javascript" src="js/entities/menu/interface.js"></script>
+<script type="text/javascript" src="js/entities/menu/main_base.js"></script>
 
 <!-- Bootstrap & Mobile optimization tricks -->
 <script type="text/javascript">
