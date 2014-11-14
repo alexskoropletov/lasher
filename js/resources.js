@@ -16,10 +16,14 @@ game.resources = [
     { name: "main_base_relic_base",   type: "image", src: "data/img/mainbase/mainbase_relic_base.png" },
     { name: "main_base_relic",        type: "image", src: "data/img/mainbase/mainbase_relic.png" },
     { name: "main_base_chicken",      type: "image", src: "data/img/mainbase/mainbase_chicken.png" },
+    { name: "getout",                 type: "image", src: "data/img/mainbase/getout.png" },
     //characters
     { name: "jose_small",             type: "image", src: "data/img/character/jose_small.png" },
     { name: "pedro_small",            type: "image", src: "data/img/character/pedro_small.png" },
     { name: "pepe_small",             type: "image", src: "data/img/character/pepe_small.png" },
     //other
-    { name: "redrain",                type: "image", src: "data/img/mainbase/redrain.png" }
+    { name: "redrain",                type: "image", src: "data/img/mainbase/redrain.png" },
+    //map
+    { name: "map",                    type: "image", src: "data/img/mainbase/map.png" },
+    { name: "map_bg",                 type: "image", src: "data/img/mainbase/map_bg.png" }
 ];

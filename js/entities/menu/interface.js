@@ -12,20 +12,21 @@ game.CharacterInfoBaloon = me.Entity.extend({
         this.color = new me.Color(255, 255, 255);
         this.font = new me.Font('Arial', 16, this.color.toHex());
         this.font.textAlign = "left";
-        this.alpha = 0.0;
+        this.renderable.setOpacity(0.0);
         this.text = text ? text : "";
     },
     draw : function(renderer) {
-        renderer.setGlobalAlpha(this.alpha);
         this._super(me.Entity, 'draw', [renderer]);
-        var context = renderer.getContext();
-        this.font.drawStroke(context, this.text, this.pos.x + 10, this.pos.y + 10);
+        if( this.renderable.getOpacity() ) {
+            var context = renderer.getContext();
+            this.font.drawStroke(context, this.text, this.pos.x + 10, this.pos.y + 10);
+        }
     },
     showCharacterInfo: function() {
-        this.alpha = 1.0;
+        this.renderable.setOpacity(1);
     },
     hideCharacterInfo: function() {
-        this.alpha = 0.0;
+        this.renderable.setOpacity(0);
     },
     update : function (dt) {
         return false;

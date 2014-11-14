@@ -1,28 +1,5 @@
 game.MainMenuScreen = me.ScreenObject.extend({
     onResetEvent: function() {
-        var image = me.loader.getImage('redrain');
-        var emitter = new me.ParticleEmitter(0, 0, {
-            image: image,
-            width: 800,
-            height: 116,
-            totalParticles: 400,
-            angle: -0.7853981633974483,
-            angleVariation: 3.141592653589793,
-            maxLife: 8000,
-            speed: 0.047140452079103175,
-            speedVariation: 5.300943312279428,
-            minStartScale: 0.3,
-            maxStartScale: 1,
-            gravity: 0.61,
-            wind: -0.1,
-            frequency: 10
-        });
-        emitter.name = 'redrain';
-        emitter.z = 110;
-        me.game.world.addChild(emitter);
-        me.game.world.addChild(emitter.container);
-        emitter.streamParticles();
-
         var characters = {
             jose: {
                 image: '"',
@@ -105,6 +82,10 @@ game.MainMenuScreen = me.ScreenObject.extend({
             chicken: {
                 object: new game.MainBaseChicken( 49, 425, { width: 32, height: 32, spritewidth: 32, spriteheight: 32, image: "main_base_chicken" }, characters.chicken ),
                 zindex: 60
+            },
+            getOut: {
+                object: new game.MainBaseGetout( 49, 500, { width: 64, height: 64, spritewidth: 64, spriteheight: 64, image: "getout" }, game.customStates.MAP ),
+                zindex: 70
             }
         };
 
@@ -118,6 +99,7 @@ game.MainMenuScreen = me.ScreenObject.extend({
         });
     },
     onDestroyEvent: function() {
+        me.input.releasePointerEvent('pointermove', me.game.viewport);
         for( k in game.mainBaseObjects ) {
             me.game.world.removeChild( game.mainBaseObjects[k].object );
         }

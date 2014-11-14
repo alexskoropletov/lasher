@@ -16,7 +16,7 @@ game.CharacterSmall = me.Entity.extend({
         me.event.subscribe("pointermove", this.mouseMove.bind(this));
     },
     mouseMove: function (event) {
-        this.hover = this.inViewport &&
+        this.hover = this.body && this.inViewport &&
             this.getBounds().containsPoint(
                 event.gameX, event.gameY
             ) &&
