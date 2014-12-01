@@ -104,7 +104,13 @@ game.MainBaseChicken = game.MainBaseElement.extend({
         this.floating = true;
         this.body.addShape( new me.Rect( 0, 0, settings.width, settings.height ) );
         me.event.subscribe("pointermove", this.mouseMove.bind(this));
-        this.baloon = new game.CharacterInfoBaloon( this.pos.x - 50, this.pos.y - 100, { width: 160, height: 96 }, character.text );
+        this.baloon = new game.CharacterInfoBaloon( this.pos.x - 50, this.pos.y - 100, {
+            width: 160,
+            height: 96,
+            spritewidth: 160,
+            spriteheight: 96,
+            image: "interface_character"
+        }, character.text );
         me.game.world.addChild( this.baloon, 70 );
     },
     draw: function (renderer) {

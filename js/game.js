@@ -1,8 +1,34 @@
 "use strict";
 var game = {
     customStates: {},
+    //entities
+    setEntities: function() {
+
+    },
     pathfinder: {
         graph: null
+    },
+    characters: {
+        jose: {
+            image: "jose_portrait",
+            text: "Me llamo Jose"
+        },
+        pedro: {
+            image: "pedro_portrait",
+            text: "\n\n   Me llamo Pedro"
+        },
+        pepe: {
+            image: "pepe_portrait",
+            text: "\n\n     Me llamo Pepe"
+        },
+        padre: {
+            image: "padre_portrait",
+            text: "\n\n      Ay dios mio!"
+        },
+        chicken: {
+            image: "",
+            text: "\n\n      Pok-pok. Pok"
+        }
     },
     //rain effect
     rainEmitter: {},
@@ -31,11 +57,14 @@ var game = {
         game.rainEmitter.z = 110;
     },
     startRain: function() {
+        game.rainClouds = new me.ImageLayer("rainClouds", 800, 113, "darkcloud", 1, 1);
         me.game.world.addChild(game.rainEmitter);
         me.game.world.addChild(game.rainEmitter.container);
+        me.game.world.addChild(game.rainClouds, 120);
         game.rainEmitter.streamParticles();
     },
     stopRain: function() {
+        me.game.world.removeChild(game.rainClouds);
         me.game.world.removeChild(game.rainEmitter);
         me.game.world.removeChild(game.rainEmitter.container);
 //        game.rainEmitter.streamParticles();
@@ -61,8 +90,8 @@ var game = {
         game.customStates.MAP = me.state.USER + 0;
         me.state.set(me.state.MENU, new game.MainMenuScreen());
         me.state.set(game.customStates.MAP, new game.MapScreen());
-//        me.state.set(me.state.PLAY, new game.PlayScreen());
-        me.state.transition("fade","#000", 300);
+        me.state.set(me.state.PLAY, new game.PlayScreen());
+        me.state.transition("fade","#FFF", 500);
         me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
             if (keyCode === me.input.KEY.PLUS) {
                 me.audio.setVolume(me.audio.getVolume()+0.1);
@@ -78,10 +107,10 @@ var game = {
             }
         });
         game.setRain();
+        game.setEntities();
         me.input.registerPointerEvent("pointermove", me.game.viewport, function (event) {
             me.event.publish("pointermove", [ event ]);
         });
-//        me.state.change(game.customStates.MAP);
         me.state.change(me.state.MENU);
     }
 };

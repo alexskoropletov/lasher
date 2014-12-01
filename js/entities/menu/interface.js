@@ -1,9 +1,5 @@
 game.CharacterInfoBaloon = me.Entity.extend({
-    init: function(x, y, settings, text) {
-        settings.spritewidth = 160;
-        settings.spriteheight = 96;
-        settings.image = "interface_character";
-        settings.alpha = 0.0;
+    init: function(x, y, settings, text, image) {
         this._super(me.Entity, 'init', [x, y , settings]);
         this.alwaysUpdate = true;
         this.anchorPoint.set(0, 0);
@@ -14,6 +10,11 @@ game.CharacterInfoBaloon = me.Entity.extend({
         this.font.textAlign = "left";
         this.renderable.setOpacity(0.0);
         this.text = text ? text : "";
+        if( image ) {
+            this.image = new me.Sprite( 10, 462, me.loader.getImage(image), 128, 128 );
+            me.game.world.addChild( this.image, 165 );
+            this.image.alpha = 0;
+        }
     },
     draw : function(renderer) {
         this._super(me.Entity, 'draw', [renderer]);
@@ -24,9 +25,15 @@ game.CharacterInfoBaloon = me.Entity.extend({
     },
     showCharacterInfo: function() {
         this.renderable.setOpacity(1);
+        if( this.image ) {
+            this.image.alpha = 1;
+        }
     },
     hideCharacterInfo: function() {
         this.renderable.setOpacity(0);
+        if( this.image ) {
+            this.image.alpha = 0;
+        }
     },
     update : function (dt) {
         return false;

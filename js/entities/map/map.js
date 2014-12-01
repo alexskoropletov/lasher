@@ -54,3 +54,44 @@ game.MapGetout = game.MapElement.extend({
         me.event.unsubscribe("pointermove");
     }
 });
+
+game.MapActionPoint = me.Entity.extend({
+    init: function(x, y, settings) {
+        this._super(me.Entity, 'init', [x, y , settings]);
+        this.renderable.addAnimation("idle",   [0, 1, 2, 3, 4, 5]);
+        this.renderable.addAnimation("active",   [6, 7, 8, 9, 10, 11]);
+        this.renderable.setCurrentAnimation("idle");
+        this.alwaysUpdate = true;
+        this.anchorPoint.set(0, 0);
+        this.floating = true;
+        this.body.addShape( new me.Rect( 0, 0, settings.width, settings.height ) );
+        me.event.subscribe("pointermove", this.mouseMove.bind(this));
+        me.input.registerPointerEvent('pointerdown', this, this.onSelect.bind(this));
+    },
+    onSelect : function (event) {
+        me.state.change(me.state.PLAY);
+        return true;
+    },
+    mouseMove: function (event) {
+        this.hover = this.body && this.inViewport &&
+            this.getBounds().containsPoint(
+                event.gameX, event.gameY
+            ) &&
+            this.body.getShape(0).containsPoint(
+                event.gameX - this.pos.x, event.gameY - this.pos.y
+            );
+
+    },
+    draw: function (renderer) {
+        if( this.hover && this.renderable.isCurrentAnimation('idle')) {
+            this.renderable.setCurrentAnimation("active");
+        }
+        if( !this.hover && this.renderable.isCurrentAnimation('active')) {
+            this.renderable.setCurrentAnimation("idle");
+        }
+        this._super(me.Entity, 'draw', [renderer]);
+    },
+    onDestroyEvent: function() {
+        me.event.unsubscribe("pointermove");
+    }
+});

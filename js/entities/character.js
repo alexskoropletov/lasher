@@ -11,7 +11,31 @@ game.CharacterSmall = me.Entity.extend({
         this.anchorPoint.set(0, 0);
         this.floating = true;
         this.hover = false;
-        this.baloon = new game.CharacterInfoBaloon( this.pos.x - 64, this.pos.y - 100, { width: 160, height: 96 }, character.text );
+        if( character.image ) {
+            this.baloon = new game.CharacterInfoBaloon( 143, 462,
+                {
+                    width: 384,
+                    height: 128,
+                    spritewidth: 384,
+                    spriteheight: 128,
+                    image: "interface_text"
+                },
+                character.text,
+                character.image
+            );
+        } else {
+            this.baloon = new game.CharacterInfoBaloon( this.pos.x - 64, this.pos.y - 100,
+                {
+                    width: 160,
+                    height: 96,
+                    spritewidth: 160,
+                    spriteheight: 96,
+                    image: "interface_character"
+                },
+                character.text,
+                character.image
+            );
+        }
         me.game.world.addChild( this.baloon, 60 );
         me.event.subscribe("pointermove", this.mouseMove.bind(this));
     },

@@ -1,7 +1,7 @@
 game.resources = [
     //menu
-    { name: "team_menu_item",         type: "image", src:  "data/img/menu/team_menu_item.png" },
     { name: "interface_character",    type: "image", src:  "data/img/mainbase/mainbase_interface_character.png" },
+    { name: "interface_text",         type: "image", src:  "data/img/mainbase/mainbase_interface_text.png" },
     //main base
     { name: "main_base_sky_01",       type: "image", src: "data/img/mainbase/mainbase_background.jpg" },
     { name: "main_base_big_hill",     type: "image", src: "data/img/mainbase/mainbase_big_hill.png" },
@@ -21,9 +21,19 @@ game.resources = [
     { name: "jose_small",             type: "image", src: "data/img/character/jose_small.png" },
     { name: "pedro_small",            type: "image", src: "data/img/character/pedro_small.png" },
     { name: "pepe_small",             type: "image", src: "data/img/character/pepe_small.png" },
+    { name: "padre_small",            type: "image", src: "data/img/character/priest_small.png" },
+    { name: "jose_portrait",          type: "image", src: "data/img/portraits/Jose_border_128.png" },
+    { name: "pedro_portrait",         type: "image", src: "data/img/portraits/Pedro_border_128.png" },
+    { name: "pepe_portrait",          type: "image", src: "data/img/portraits/Pepe_border_128.png" },
+    { name: "padre_portrait",         type: "image", src: "data/img/portraits/Padre_border_128.png" },
     //other
     { name: "redrain",                type: "image", src: "data/img/mainbase/redrain.png" },
+    { name: "darkcloud",              type: "image", src: "data/img/mainbase/darkcloud.png" },
     //map
-    { name: "map",                    type: "image", src: "data/img/mainbase/map.png" },
-    { name: "map_bg",                 type: "image", src: "data/img/mainbase/map_bg.png" }
+    { name: "worldmap",               type: "image", src: "data/img/worldmap/worldmap.jpg" },
+    { name: "skel",                   type: "image", src: "data/img/enemies/skel.png" },
+    //fight
+    { name: "fightmap",               type: "tmx",   src: "data/map/fight01.tmx" },
+    { name: "forest",                 type: "image", src: "data/img/forest.png" },
+    { name: "starter",                type: "image", src: "data/img/grid/starter.png" }
 ];

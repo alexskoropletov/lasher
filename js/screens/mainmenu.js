@@ -1,23 +1,6 @@
 game.MainMenuScreen = me.ScreenObject.extend({
     onResetEvent: function() {
-        var characters = {
-            jose: {
-                image: '"',
-                text: "Me llamo Jose"
-            },
-            pedro: {
-                image: '"',
-                text: "Me llamo Pedro"
-            },
-            pepe: {
-                image: '"',
-                text: "Me llamo Pepe"
-            },
-            chicken: {
-                image: "",
-                text: "\n\n      Pok-pok. Pok"
-            }
-        };
+        var characters = game.characters;
         game.mainBaseObjects = {
             //background
             background: {
@@ -62,6 +45,10 @@ game.MainMenuScreen = me.ScreenObject.extend({
                 object: new game.CharacterSmall( 560, 500, { width: 32, height: 64, image: "pepe_small" }, characters.pepe ),
                 zindex: 50
             },
+            padreCharacter: {
+                object: new game.CharacterSmall( 200, 415, { width: 32, height: 64, image: "padre_small" }, characters.padre ),
+                zindex: 50
+            },
             //other
             cherch: {
                 object: new game.MainBaseCherch( 80, 225, { width: 221, height: 201, spritewidth: 221, spriteheight: 201, image: "main_base_cherch" } ),
@@ -88,20 +75,13 @@ game.MainMenuScreen = me.ScreenObject.extend({
                 zindex: 70
             }
         };
-
         for( k in game.mainBaseObjects ) {
             me.game.world.addChild( game.mainBaseObjects[k].object, game.mainBaseObjects[k].zindex );
         }
-
-        //mousemove event
-        me.input.registerPointerEvent("pointermove", me.game.viewport, function (event) {
-            me.event.publish("pointermove", [ event ]);
-        });
     },
     onDestroyEvent: function() {
-        me.input.releasePointerEvent('pointermove', me.game.viewport);
         for( k in game.mainBaseObjects ) {
-            me.game.world.removeChild( game.mainBaseObjects[k].object );
+            me.game.world.removeChild( game.mainBaseObjects[k].object, true );
         }
         game.mainBaseObjects = {};
     }
