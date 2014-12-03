@@ -9,7 +9,7 @@ game.CharacterFightSmall = me.Entity.extend({
         this.renderable.addAnimation( "idle_active",     [2], 100);
         this.renderable.setCurrentAnimation("idle");
         this.anchorPoint.set(0, 0);
-        this.body.setVelocity(4, 4);
+//        this.body.setVelocity(4, 4);
         me.event.subscribe("pointermove", this.mouseMove.bind(this));
     },
     mouseMove: function (event) {
@@ -30,9 +30,6 @@ game.CharacterFightSmall = me.Entity.extend({
         }
     },
     onCollision : function (response) {
-        console.log( response.overlap );
-        console.log( response.overlapN );
-        console.log( response.overlapV );
         if (response.b.body.collisionType === me.collision.types.WORLD_SHAPE) {
             var setX = this.body.accel.x;
             var setY = this.body.accel.y;

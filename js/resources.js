@@ -17,6 +17,7 @@ game.resources = [
     { name: "main_base_relic",        type: "image", src: "data/img/mainbase/mainbase_relic.png" },
     { name: "main_base_chicken",      type: "image", src: "data/img/mainbase/mainbase_chicken.png" },
     { name: "getout",                 type: "image", src: "data/img/mainbase/getout.png" },
+    { name: "tomap",                  type: "image", src: "data/img/mainbase/tomap.png" },
     //characters
     { name: "jose_small",             type: "image", src: "data/img/character/jose_small.png" },
     { name: "pedro_small",            type: "image", src: "data/img/character/pedro_small.png" },
@@ -32,8 +33,10 @@ game.resources = [
     //map
     { name: "worldmap",               type: "image", src: "data/img/worldmap/worldmap.jpg" },
     { name: "skel",                   type: "image", src: "data/img/enemies/skel.png" },
+    { name: "gettobase",              type: "image", src: "data/img/worldmap/gettobase.png" },
     //fight
-    { name: "fightmap",               type: "tmx",   src: "data/map/fight01.tmx" },
     { name: "forest",                 type: "image", src: "data/img/forest.png" },
-    { name: "starter",                type: "image", src: "data/img/grid/starter.png" }
+    { name: "rectangle01",            type: "image", src: "data/img/grid/rectangle01.png" },
+    { name: "active_grid",            type: "image", src: "data/img/grid/active.png" },
+    { name: "active_grid_noway",      type: "image", src: "data/img/grid/active_noway.png" }
 ];

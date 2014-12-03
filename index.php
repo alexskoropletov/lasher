@@ -21,7 +21,7 @@
 <!-- Plugin(s) -->
 <script type="text/javascript" src="js/plugins/debug/debugPanel.js"></script>
 <!-- Pathfinder -->
-<script type='text/javascript' src='js/javascript-astar/astar.js'></script>
+<script type='text/javascript' src='js/astar/astar.js'></script>
 <!-- Sound player -->
 <script type='text/javascript' src='js/jsfxr/jsfxr.js'></script>
 <script type='text/javascript' src='js/jsfxr/sounds.js'></script>
@@ -35,6 +35,7 @@
 <script type="text/javascript" src="js/entities/menu/main_base.js"></script>
 <script type="text/javascript" src="js/entities/map/map.js"></script>
 <script type="text/javascript" src="js/entities/fight/character.js"></script>
+<script type="text/javascript" src="js/entities/fight/grid.js"></script>
 
 <script type="text/javascript" src="js/screens/mainmenu.js"></script>
 <script type="text/javascript" src="js/screens/map.js"></script>

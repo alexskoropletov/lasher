@@ -71,7 +71,7 @@ game.MainMenuScreen = me.ScreenObject.extend({
                 zindex: 60
             },
             getOut: {
-                object: new game.MainBaseGetout( 49, 500, { width: 64, height: 64, spritewidth: 64, spriteheight: 64, image: "getout" }, game.customStates.MAP ),
+                object: new game.MainBaseGetout( 0, 500, { width: 159, height: 63, spritewidth: 159, spriteheight: 63, image: "tomap" }, game.customStates.MAP ),
                 zindex: 70
             }
         };

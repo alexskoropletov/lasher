@@ -5,13 +5,43 @@ var game = {
     setEntities: function() {
 
     },
+    getRandomInt: function(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+    },
     pathfinder: {
-        graph: null
+        graph: null,
+        gridTypes: {
+            // _map legend:
+            // 0 - wall
+            // 1 - empty space
+            // 2 - player
+            grid1: {
+                width: 320,
+                height: 160,
+                x: 240,
+                y: 300,
+                _map: [
+                    [1,1,1,1,1,1,1,1,1,1],
+                    [0,1,1,1,1,1,1,1,1,1],
+                    [1,1,1,1,1,1,1,1,1,1],
+                    [1,1,1,1,1,1,1,1,1,1],
+                    [1,1,1,1,1,1,1,1,1,1]
+                ],
+                _location: [
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [1,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0]
+                ],
+                image: "rectangle01"
+            }
+        }
     },
     characters: {
         jose: {
             image: "jose_portrait",
-            text: "Me llamo Jose"
+            text: "\n\n   Me llamo Jose"
         },
         pedro: {
             image: "pedro_portrait",
@@ -91,6 +121,7 @@ var game = {
         me.state.set(me.state.MENU, new game.MainMenuScreen());
         me.state.set(game.customStates.MAP, new game.MapScreen());
         me.state.set(me.state.PLAY, new game.PlayScreen());
+
         me.state.transition("fade","#FFF", 500);
         me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
             if (keyCode === me.input.KEY.PLUS) {
@@ -112,6 +143,8 @@ var game = {
             me.event.publish("pointermove", [ event ]);
         });
         me.state.change(me.state.MENU);
+//        me.state.change(me.state.PLAY);
+//        me.state.change(game.customStates.MAP);
     }
 };
 
