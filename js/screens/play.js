@@ -59,35 +59,17 @@ game.PlayScreen = me.ScreenObject.extend({
     onResetEvent: function() {
         game.startRain();
 
+        this.selectedEntity = null;
+
         this.gridForThisLevel = game.pathfinder.gridTypes["grid" + game.getRandomInt( 1, 1 )];
         game.pathfinder.graph = new Graph(this.gridForThisLevel._map);
 
         this.pointerPosition = {
-            x: this.gridForThisLevel.x,
-            y: this.gridForThisLevel.y,
-            mapX: 1,
-            mapY: 1
+            mapPos: { x: 1,y: 1 },
+            mapPosOld: { x: 1, y: 1 },
+            pathShowed: false
         };
-
-        this.gridList = {};
-
-        this.playerPosition = {
-            x: this.gridForThisLevel.x,
-            y: ( this.gridForThisLevel.y - 32 ),
-            mapX: 1,
-            mapY: 1
-        };
-        for( var playerY in this.gridForThisLevel._location ) {
-            for( var playerX in this.gridForThisLevel._location[playerY] ) {
-                if( this.gridForThisLevel._location[playerY][playerX] == 1 ) {
-                    this.playerPosition.x += playerX * 32;
-                    this.playerPosition.y += playerY * 32;
-                    this.playerPosition.mapX = playerX;
-                    this.playerPosition.mapY = playerY;
-                }
-            }
-        }
-
+        //adding base objects
         game.fightObjects = {
             //background
             backgroundLayer: {
@@ -97,30 +79,47 @@ game.PlayScreen = me.ScreenObject.extend({
             grid: {
                 object: new me.Sprite(this.gridForThisLevel.x, this.gridForThisLevel.y, me.loader.getImage(this.gridForThisLevel.image)),
                 zindex: 4
-            },
-            //characters
-            joseCharacter:  {
-                object: new game.CharacterFightSmall( this.playerPosition.x, this.playerPosition.y, { width: 32, height: 64, image: "jose_small" } ),
-                zindex: 50
-            },
-//            pedroCharacter:  {
-//                object: new game.CharacterFightSmall( 468, 344, { width: 32, height: 64, image: "pedro_small" } ),
-//                zindex: 50
-//            },
-//            pepeCharacter: {
-//                object: new game.CharacterFightSmall( 248, 408, { width: 32, height: 64, image: "pepe_small" } ),
-//                zindex: 50
-//            },
-            getOut: {
-//                object: new game.MainBaseGetout( 49, 500, { width: 64, height: 64, spritewidth: 64, spriteheight: 64, image: "getout" }, game.customStates.MAP ),
-//                zindex: 70
             }
+//            ,getOut: {
+////                object: new game.MainBaseGetout( 49, 500, { width: 64, height: 64, spritewidth: 64, spriteheight: 64, image: "getout" }, game.customStates.MAP ),
+////                zindex: 70
+//            }
         };
 
+        //add player characters
+        var playerPos = {
+            x: this.gridForThisLevel.x,
+            y: ( this.gridForThisLevel.y - 32 )
+        };
+        var nextCharacterIndex = 50;
+        for( var playerY in this.gridForThisLevel._location ) {
+            for( var playerX in this.gridForThisLevel._location[playerY] ) {
+                if( this.gridForThisLevel._location[playerY][playerX] == 1 ) {
+                    if( this.gridForThisLevel._location ) {
+                        game.fightObjects['fighter_' + playerX + '_' + playerY] = {
+                            object: new game.CharacterFightSmall( playerPos.x + playerX * 32, playerPos.y + playerY * 32, { width: 32, height: 64, image: "jose_small" } ),
+                            zindex: nextCharacterIndex,
+                            pos: {
+                                x: playerX,
+                                y: playerY
+                            }
+                        };
+                        nextCharacterIndex++;
+                    }
+                }
+            }
+        }
+        //display objects and stuff
+        for( k in game.fightObjects ) {
+            if( game.fightObjects[k].object ) {
+                me.game.world.addChild( game.fightObjects[k].object, game.fightObjects[k].zindex );
+            }
+        }
+        //field grid
         game.fightGrid = {};
         for( mapX = 0; mapX < this.gridForThisLevel._map.length; mapX++ ) {
             for( mapY = 0; mapY < this.gridForThisLevel._map[mapX].length; mapY++ ) {
-                game.fightGrid['active' + mapX + mapY] = {
+                game.fightGrid['active_' + mapX + "_" + mapY] = {
                     object: new game.gridEntiry(
                         this.gridForThisLevel.x + mapY * 32,
                         this.gridForThisLevel.y + mapX * 32,
@@ -128,7 +127,7 @@ game.PlayScreen = me.ScreenObject.extend({
                     ),
                     zindex: 5
                 };
-                game.fightGrid['activenoway' + mapX + mapY] = {
+                game.fightGrid['activenoway_' + mapX + '_' + mapY] = {
                     object: new game.gridEntiry(
                         this.gridForThisLevel.x + mapY * 32,
                         this.gridForThisLevel.y + mapX * 32,
@@ -138,53 +137,103 @@ game.PlayScreen = me.ScreenObject.extend({
                 };
             }
         }
-
-        for( k in game.fightObjects ) {
-            if( game.fightObjects[k].object ) {
-                me.game.world.addChild( game.fightObjects[k].object, game.fightObjects[k].zindex );
-            }
-        }
-
         this.hideGrid();
         for( k in game.fightGrid ) {
             if( game.fightGrid[k].object ) {
                 me.game.world.addChild( game.fightGrid[k].object, game.fightGrid[k].zindex );
             }
         }
+
+        //pointer events listeners
         me.event.subscribe("pointermove", this.mouseMove.bind(this));
+        me.input.registerPointerEvent('pointerdown', game.fightObjects.grid.object, this.mouseDown.bind(this));
     },
     onDestroyEvent: function() {
         game.stopRain();
     },
+    //set selected grid cell(s) visible
     showGrid: function( showThisGrid ) {
         for( var gridIndex = 0; gridIndex < showThisGrid.length; gridIndex++ ) {
-            game.fightGrid[showThisGrid[gridIndex]].object.renderable.setOpacity(1);
+            if( !game.fightGrid[showThisGrid[gridIndex]] ) {
+                console.log( showThisGrid[gridIndex] );
+            } else {
+                game.fightGrid[showThisGrid[gridIndex]].object.renderable.setOpacity(1);
+            }
         }
+        this.pointerPosition.pathShowed = true;
     },
+    //set all grid cells invisible
     hideGrid: function() {
         for( k in game.fightGrid ) {
             if( game.fightGrid[k].object ) {
                 game.fightGrid[k].object.renderable.setOpacity(0);
             }
         }
+        this.pointerPosition.pathShowed = false;
+    },
+    //get map position in grid coordinates
+    getMapPos: function( e ) {
+        var pos = {
+            x: parseInt( Math.floor( ( e.gameWorldX - this.gridForThisLevel.x - 1 ) / 32 ) ),
+            y: parseInt( Math.floor( ( e.gameWorldY - this.gridForThisLevel.y - 1 ) / 32 ) )
+        };
+        if( pos.x < 0 ) {
+            pos.x = 0;
+        }
+        if( pos.y < 0 ) {
+            pos.y = 0;
+        }
+        return pos;
+    },
+    //get type of highlighted grid for current pointer position
+    getGridType: function() {
+        var gridType = "activenoway";
+        if( this.gridForThisLevel._location[this.pointerPosition.mapPos.y] ) {
+            if( this.gridForThisLevel._location[this.pointerPosition.mapPos.y][this.pointerPosition.mapPos.x] ) {
+                gridType = "active";
+            }
+        } else {
+            console.log( this.pointerPosition.mapPos );
+        }
+        return gridType;
     },
     mouseMove: function( e ) {
         if( game.fightObjects.grid.object.containsPoint( e.gameWorldX, e.gameWorldY ) ) {
-            this.pointerPosition.x = e.gameWorldX;
-            this.pointerPosition.y = e.gameWorldY;
-            this.pointerPosition.mapX = Math.floor( ( e.gameWorldX - this.gridForThisLevel.x ) / 32 );
-            this.pointerPosition.mapY = Math.floor( ( e.gameWorldY - this.gridForThisLevel.y ) / 32 );
-            this.showPath();
+            this.pointerPosition.mapPos = this.getMapPos( e );
+            if( JSON.stringify( this.pointerPosition.mapPos ) !== JSON.stringify( this.pointerPosition.mapPosOld ) ) {
+                this.pointerPosition.mapPosOld = this.pointerPosition.mapPos;
+                if( this.selectedEntity ) {
+                    this.showPath();
+                } else {
+                    this.hideGrid();
+                    this.showGrid( [ this.getGridType() + '_' + this.pointerPosition.mapPos.y + "_" + this.pointerPosition.mapPos.x ] );
+                }
+            }
         } else {
-            this.hideGrid();
+            if( this.pointerPosition.pathShowed ) {
+                this.hideGrid();
+            }
         }
     },
-    showPath: function( toX, toY ) {
-        if( typeof game.pathfinder.graph.grid[parseInt(this.pointerPosition.mapY)] != 'undefined' ) {
+    mouseDown: function( e ) {
+        if( this.selectedEntity ) {
+            this.selectedEntity.object.setHover( false );
+            this.hideGrid();
+        }
+        if( this.getGridType() == 'active' ) {
+            this.selectedEntity = game.fightObjects['fighter_' + this.pointerPosition.mapPos.x + '_' + this.pointerPosition.mapPos.y];
+            this.selectedEntity.object.setHover( true );
+        } else {
+            this.selectedEntity = null;
+        }
+        console.log( this.selectedEntity );
+    },
+    showPath: function() {
+        if( typeof game.pathfinder.graph.grid[parseInt(this.pointerPosition.mapPos.y)] != 'undefined' ) {
             var result = astar.search(
                 game.pathfinder.graph,
-                game.pathfinder.graph.grid[parseInt(this.playerPosition.mapY)][parseInt(this.playerPosition.mapX)],
-                game.pathfinder.graph.grid[parseInt(this.pointerPosition.mapY)][parseInt(this.pointerPosition.mapX)],
+                game.pathfinder.graph.grid[this.selectedEntity.pos.y][this.selectedEntity.pos.x],
+                game.pathfinder.graph.grid[this.pointerPosition.mapPos.y][this.pointerPosition.mapPos.x],
                 { closest: true }
             );
             if( result.length ) {
@@ -192,7 +241,7 @@ game.PlayScreen = me.ScreenObject.extend({
                 var showThisGrid = [];
                 for( k in result ) {
                     if( typeof result[k].x != 'undefined' && typeof result[k].y != 'undefined' ) {
-                        showThisGrid.push( ( k > 3 ? "activenoway" : "active" ) + result[k].x + result[k].y);
+                        showThisGrid.push( ( k > 3 ? "activenoway_" : "active_" ) + result[k].x + "_" + result[k].y);
                     }
                 }
                 this.showGrid( showThisGrid );

@@ -10,24 +10,27 @@ game.CharacterFightSmall = me.Entity.extend({
         this.renderable.setCurrentAnimation("idle");
         this.anchorPoint.set(0, 0);
 //        this.body.setVelocity(4, 4);
-        me.event.subscribe("pointermove", this.mouseMove.bind(this));
+//        me.event.subscribe("pointermove", this.mouseMove.bind(this));
     },
-    mouseMove: function (event) {
-        this.hover = this.body && this.inViewport &&
-            this.getBounds().containsPoint(
-                event.gameX, event.gameY
-            ) &&
-            this.body.getShape(0).containsPoint(
-                event.gameX - this.pos.x, event.gameY - this.pos.y
-            );
+//    mouseMove: function (event) {
+//        this.hover = this.body && this.inViewport &&
+//            this.getBounds().containsPoint(
+//                event.gameX, event.gameY
+//            ) &&
+//            this.body.getShape(0).containsPoint(
+//                event.gameX - this.pos.x, event.gameY - this.pos.y
+//            );
+//    },
+    setHover: function( hover ) {
+        this.hover = hover ? true : false;
     },
     update : function (dt) {
-        if( !me.collision.check(this) ) {
-            this.body.vel.x += this.body.accel.x * me.timer.tick;
-            this.body.vel.y += this.body.accel.y * me.timer.tick;
+//        if( !me.collision.check(this) ) {
+//            this.body.vel.x += this.body.accel.x * me.timer.tick;
+//            this.body.vel.y += this.body.accel.y * me.timer.tick;
             this.body.update(dt);
             return (this._super(me.Entity, 'update', [dt]) || this.body.vel.x !== 0 || this.body.vel.y !== 0);
-        }
+//        }
     },
     onCollision : function (response) {
         if (response.b.body.collisionType === me.collision.types.WORLD_SHAPE) {

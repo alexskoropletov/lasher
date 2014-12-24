@@ -16,7 +16,8 @@
 <!-- melonJS Library -->
 <!--<script type="text/javascript" src="js/build/melonJS-1.1.0.js"></script>-->
 <!--<script type="text/javascript" src="melonJS/build/melonJS-1.2.0-min.js"></script>-->
-<script type="text/javascript" src="melonJS/build/melonJS-2.0.0-min.js"></script>
+<!--<script type="text/javascript" src="melonJS/build/melonJS-2.0.0-min.js"></script>-->
+<script type="text/javascript" src="melonJS/build/melonJS-2.0.2-min.js"></script>
 <!--<script type="text/javascript" src="melonJS/build/melonJS-2.1.0-min.js"></script>-->
 <!-- Plugin(s) -->
 <script type="text/javascript" src="js/plugins/debug/debugPanel.js"></script>

@@ -24,14 +24,14 @@ var game = {
                     [1,1,1,1,1,1,1,1,1,1],
                     [0,1,1,1,1,1,1,1,1,1],
                     [1,1,1,1,1,1,1,1,1,1],
-                    [1,1,1,1,1,1,1,1,1,1],
+                    [0,1,1,1,1,1,1,1,1,1],
                     [1,1,1,1,1,1,1,1,1,1]
                 ],
                 _location: [
                     [0,0,0,0,0,0,0,0,0,0],
                     [1,0,0,0,0,0,0,0,0,0],
                     [0,0,0,0,0,0,0,0,0,0],
-                    [0,0,0,0,0,0,0,0,0,0],
+                    [1,0,0,0,0,0,0,0,0,0],
                     [0,0,0,0,0,0,0,0,0,0]
                 ],
                 image: "rectangle01"
@@ -142,8 +142,8 @@ var game = {
         me.input.registerPointerEvent("pointermove", me.game.viewport, function (event) {
             me.event.publish("pointermove", [ event ]);
         });
-        me.state.change(me.state.MENU);
-//        me.state.change(me.state.PLAY);
+//        me.state.change(me.state.MENU);
+        me.state.change(me.state.PLAY);
 //        me.state.change(game.customStates.MAP);
     }
 };
