@@ -18,7 +18,7 @@ Powered by:
 Demo
 ====
 
-[http://lasher.annpalna.ru/](http://lasher.annpalna.ru/)
+Server closed, sorry
 
 Roadmap
 =======
